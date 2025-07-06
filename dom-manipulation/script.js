@@ -3,9 +3,9 @@ let quotes = [];
 // DOM elements
 const quoteDisplay = document.getElementById('quoteDisplay');
 const newQuoteBtn = document.getElementById('newQuote');
-const categorySelect = document.getElementById('categorySelect');
+const categorySelect = document.getElementById('categoryFilter');
 
-// Load from localStorage on startup
+// Load from localStorage
 function loadQuotes() {
   const saved = localStorage.getItem('quotes');
   if (saved) {
@@ -24,21 +24,17 @@ function saveQuotes() {
   localStorage.setItem('quotes', JSON.stringify(quotes));
 }
 
-// Save last quote to sessionStorage
-function saveLastViewedQuote(quote) {
-  sessionStorage.setItem('lastViewedQuote', JSON.stringify(quote));
+// Save selected category filter
+function saveSelectedCategoryFilter(category) {
+  localStorage.setItem('selectedCategoryFilter', category);
 }
 
-// Restore last viewed quote from sessionStorage
-function loadLastViewedQuote() {
-  const last = sessionStorage.getItem('lastViewedQuote');
-  if (last) {
-    const q = JSON.parse(last);
-    quoteDisplay.textContent = `"${q.text}" — ${q.category}`;
-  }
+// Load last selected category filter
+function loadSelectedCategoryFilter() {
+  return localStorage.getItem('selectedCategoryFilter') || 'all';
 }
 
-// Create add quote form dynamically
+// Create add quote form
 function createAddQuoteForm() {
   const container = document.getElementById('addQuoteFormContainer');
 
@@ -74,40 +70,50 @@ function addQuote() {
   const newQ = { text, category };
   quotes.push(newQ);
   saveQuotes();
-  loadCategories();
+  populateCategories(); // update dropdown
+  filterQuotes(); // apply filter immediately
 
   document.getElementById('newQuoteText').value = '';
   document.getElementById('newQuoteCategory').value = '';
   alert("Quote added successfully!");
 }
 
-// Load categories
-function loadCategories() {
+// Populate filter dropdown
+function populateCategories() {
   const categories = [...new Set(quotes.map(q => q.category))];
-  categorySelect.innerHTML = '<option value="all">All</option>';
+
+  categorySelect.innerHTML = '<option value="all">All Categories</option>';
   categories.forEach(cat => {
     const option = document.createElement('option');
     option.value = cat;
     option.textContent = cat;
     categorySelect.appendChild(option);
   });
+
+  // Restore saved filter selection
+  const savedFilter = loadSelectedCategoryFilter();
+  categorySelect.value = savedFilter;
 }
 
-// Show random quote
-function showRandomQuote() {
-  const selected = categorySelect.value;
-  const filtered = selected === 'all'
+// Filter quotes
+function filterQuotes() {
+  const selectedCategory = categorySelect.value;
+  saveSelectedCategoryFilter(selectedCategory);
+
+  const filtered = selectedCategory === 'all'
     ? quotes
-    : quotes.filter(q => q.category.toLowerCase() === selected.toLowerCase());
+    : quotes.filter(q => q.category.toLowerCase() === selectedCategory.toLowerCase());
 
   if (filtered.length === 0) {
-    quoteDisplay.textContent = "No quotes in this category.";
+    quoteDisplay.textContent = "No quotes available in this category.";
     return;
   }
 
   const randomQuote = filtered[Math.floor(Math.random() * filtered.length)];
   quoteDisplay.textContent = `"${randomQuote.text}" — ${randomQuote.category}`;
-  saveLastViewedQuote(randomQuote);
+
+  // Optionally store last viewed quote (session)
+  sessionStorage.setItem('lastViewedQuote', JSON.stringify(randomQuote));
 }
 
 // Export to JSON
@@ -131,7 +137,8 @@ function importFromJsonFile(event) {
       if (!Array.isArray(importedQuotes)) throw new Error("Invalid format");
       quotes.push(...importedQuotes);
       saveQuotes();
-      loadCategories();
+      populateCategories();
+      filterQuotes();
       alert('Quotes imported successfully!');
     } catch (err) {
       alert("Invalid JSON file.");
@@ -142,7 +149,7 @@ function importFromJsonFile(event) {
 
 // Init
 loadQuotes();
-loadCategories();
 createAddQuoteForm();
-loadLastViewedQuote();
-newQuoteBtn.addEventListener('click', showRandomQuote);
+populateCategories();
+filterQuotes(); // filter based on stored category
+newQuoteBtn.addEventListener('click', filterQuotes);
