@@ -1,16 +1,36 @@
-// Initial quotes array
 const quotes = [
   { text: "The only limit to our realization of tomorrow is our doubts of today.", category: "Motivation" },
   { text: "Life is what happens when you're busy making other plans.", category: "Life" },
   { text: "In the middle of every difficulty lies opportunity.", category: "Inspiration" }
 ];
 
-// DOM Elements
 const quoteDisplay = document.getElementById('quoteDisplay');
 const newQuoteBtn = document.getElementById('newQuote');
 const categorySelect = document.getElementById('categorySelect');
 
-// Load initial categories
+// Create the Add Quote form dynamically
+function createAddQuoteForm() {
+  const container = document.getElementById('addQuoteFormContainer');
+
+  const quoteInput = document.createElement('input');
+  quoteInput.id = 'newQuoteText';
+  quoteInput.type = 'text';
+  quoteInput.placeholder = 'Enter a new quote';
+
+  const categoryInput = document.createElement('input');
+  categoryInput.id = 'newQuoteCategory';
+  categoryInput.type = 'text';
+  categoryInput.placeholder = 'Enter quote category';
+
+  const addButton = document.createElement('button');
+  addButton.textContent = 'Add Quote';
+  addButton.onclick = addQuote;
+
+  container.appendChild(quoteInput);
+  container.appendChild(categoryInput);
+  container.appendChild(addButton);
+}
+
 function loadCategories() {
   const categories = [...new Set(quotes.map(q => q.category))];
   categorySelect.innerHTML = '<option value="all">All</option>';
@@ -22,7 +42,6 @@ function loadCategories() {
   });
 }
 
-// Show a random quote
 function showRandomQuote() {
   const selectedCategory = categorySelect.value;
   let filteredQuotes = quotes;
@@ -40,7 +59,6 @@ function showRandomQuote() {
   quoteDisplay.textContent = `"${filteredQuotes[randomIndex].text}" — ${filteredQuotes[randomIndex].category}`;
 }
 
-// Add a new quote
 function addQuote() {
   const text = document.getElementById('newQuoteText').value.trim();
   const category = document.getElementById('newQuoteCategory').value.trim();
@@ -52,13 +70,13 @@ function addQuote() {
 
   quotes.push({ text, category });
   loadCategories();
+
   document.getElementById('newQuoteText').value = '';
   document.getElementById('newQuoteCategory').value = '';
   alert("Quote added successfully!");
 }
 
-// Event listener
+// Initialize
 newQuoteBtn.addEventListener('click', showRandomQuote);
-
-// Initial setup
 loadCategories();
+createAddQuoteForm(); // ✅ Now it's present!
