@@ -1,30 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Quote Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
 <body>
-    <div id="syncStatus" style="background:#f9f9f9; padding:10px; margin-bottom:15px; border:1px solid #ccc; display:none;"></div>
-
-  <h1>Dynamic Quote Generator</h1>
-
-  <!-- Category Filter -->
-  <label for="categoryFilter">Filter by Category:</label>
-  <select id="categoryFilter" onchange="filterQuotes()">
-    <option value="all">All Categories</option>
-  </select>
-
-  <!-- Show Quote Section -->
-  <div id="quoteDisplay">Click "Show New Quote" to begin!</div>
-  <button id="newQuote">Show New Quote</button>
-
-  <hr>
-
-  <!-- Add Quote Form -->
-  <h2>Add a New Quote</h2>
-  <div id="addQuoteFormContainer"></div>
-
-  <hr>
-
-  <!-- JSON Import/Export -->
-  <h2>Import / Export Quotes (JSON)</h2>
-  <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
-  <button onclick="exportToJson()">Export Quotes</button>
-
-  <script src="script.js"></script>
+<div class="container">
+    <h1>Dynamic Quote Generator</h1>
+    
+    <!-- Quote Display Section -->
+    <div id="quoteDisplay" class="quote-display"></div>
+    
+    <!-- Category Filter -->
+    <select id="categoryFilter" onchange="filterQuotes()">
+        <option value="all">All Categories</option>
+    </select>
+    
+    <!-- Quote Navigation Buttons -->
+    <div class="quote-controls">
+        <button id="newQuote" onclick="showRandomQuote()">Show New Quote</button>
+    </div>
+    
+    <!-- Quote Addition Form -->
+    <div class="quote-form">
+        <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
+        <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
+        <button onclick="addQuote()">Add Quote</button>
+    </div>
+    
+    <!-- JSON Import/Export -->
+    <div class="json-controls">
+        <button onclick="exportToJsonFile()">Export Quotes</button>
+        <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
+    </div>
+</div>
+<script src="script.js"></script>
 </body>
+</html>
