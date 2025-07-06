@@ -1,0 +1,19 @@
+ 
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    #quoteDisplay {
+      margin: 20px 0;
+      padding: 15px;
+      border: 1px solid #ccc;
+      background-color: #f9f9f9;
+    }
+    label, input {
+      display: block;
+      margin: 5px 0;
+    }
+    select, input, button {
+      padding: 5px;
+    }
+  
